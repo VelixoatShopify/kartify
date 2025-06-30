@@ -3,7 +3,7 @@
 client_id = "5160030e2b4376cd422f54171e2f5eb3"
 name = "Kartify"
 handle = "kartify-5"
-application_url = "https://shorter-swaziland-bufing-son.trycloudflare.com"
+application_url = "https://sullivan-riders-commonly-advice.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://shorter-swaziland-bufing-son.trycloudflare.com/auth/callback", "https://shorter-swaziland-bufing-son.trycloudflare.com/auth/shopify/callback", "https://shorter-swaziland-bufing-son.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://sullivan-riders-commonly-advice.trycloudflare.com/auth/callback", "https://sullivan-riders-commonly-advice.trycloudflare.com/auth/shopify/callback", "https://sullivan-riders-commonly-advice.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

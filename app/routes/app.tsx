@@ -21,10 +21,13 @@ export default function App() {
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <NavMenu>
-        <Link to="/app" rel="home">
-          Home
-        </Link>
-        <Link to="/app/additional">Additional page</Link>
+        <Link to="/app" rel="home">Home</Link>
+        <Link to="/abandoned-cart">Abandoned Cart Recovery</Link>
+        <Link to="/whatsapp">WhatsApp Messaging</Link>
+        <Link to="/reviews">Review Collection</Link>
+        <Link to="/bundling">Product Bundling</Link>
+        <Link to="/invoices">Invoice Generation</Link>
+        <Link to="/analytics">Analytics Dashboard</Link>
       </NavMenu>
       <Outlet />
     </AppProvider>
