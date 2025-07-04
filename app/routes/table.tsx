@@ -112,9 +112,10 @@ export default function CartRecoveryTable() {
                   <Text as="span" variant="bodyMd">{cart.value}</Text>
                   <div>
                     {cart.status === "Pending" ? (
-                      <Button size="slim" onClick={() => alert(`Recovering cart for ${cart.customer}`)}>
+                      <Link to = '/settings'><Button size="slim" onClick={() => alert(`Recovering cart for ${cart.customer}`)}>
                         Recover Now
                       </Button>
+                      </Link>
                     ) : (
                       <Text as="span" variant="bodyMd">Recovered</Text>
                     )}
