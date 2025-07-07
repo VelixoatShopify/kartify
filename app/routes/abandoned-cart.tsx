@@ -171,13 +171,15 @@ function TableComponent() {
 }
 
 function SettingsComponent() {
-  const [message, setMessage] = useState("Hi [Name],\nYou left something in your cart...");
+  const [message, setMessage] = useState("Hey [Name], we noticed you left some items in your cart. Complete your purchase now before they're gone!");
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
   const [delay, setDelay] = useState("0");
   const [delayUnit, setDelayUnit] = useState("minutes");
   const [viaWhatsapp, setViaWhatsapp] = useState(false);
   const [viaEmail, setViaEmail] = useState(false);
   const [viaSms, setViaSms] = useState(false);
+  const [language, setLanguage] = useState("en");
+  const [isEditing, setIsEditing] = useState(false);
 
   const timezones = [
     { label: 'UTC+00:00', value: 'UTC' },
@@ -188,48 +190,151 @@ function SettingsComponent() {
   ];
 
   const delayUnits = [
-    { label: 'minutes', value: 'minutes' },
-    { label: 'hours', value: 'hours' },
+    { label: 'Minutes', value: 'minutes' },
+    { label: 'Hours', value: 'hours' },
+  ];
+
+  const languages = [
+    { label: 'English', value: 'en' },
+    { label: 'Spanish', value: 'es' },
+    { label: 'French', value: 'fr' },
   ];
 
   return (
-    <BlockStack gap="400">
-      <Card padding="600">
-        <BlockStack gap="400">
-          <Text as="h2" variant="headingMd">Template Editor</Text>
-          <TextField
-            label="Message"
-            labelHidden
-            value={message}
-            onChange={setMessage}
-            multiline
-            autoComplete="off"
-          />
-          <InlineStack gap="200">
-            <Button icon={EditIcon} size="medium">Edit msg</Button>
-            <Button variant="primary" size="medium">Insert Dynamic Variables</Button>
-          </InlineStack>
-          <InlineStack gap="400">
-            <Checkbox label="WhatsApp" checked={viaWhatsapp} onChange={setViaWhatsapp} />
-            <Checkbox label="Email" checked={viaEmail} onChange={setViaEmail} />
-            <Checkbox label="SMS" checked={viaSms} onChange={setViaSms} />
-          </InlineStack>
-        </BlockStack>
-      </Card>
+    <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
 
-      <Card padding="600">
-        <BlockStack gap="400">
-          <Text as="h2" variant="headingMd">Timezone and Delay Settings</Text>
-          <Select label="Timezone" options={timezones} value={selectedTimezone} onChange={setSelectedTimezone} />
-          <InlineStack gap="200">
-            <TextField label="Delay" type="number" value={delay} onChange={setDelay} autoComplete="off" />
-            <Select label="Unit" options={delayUnits} value={delayUnit} onChange={setDelayUnit} />
-          </InlineStack>
-          <div style={{ maxWidth: '200px', margin: '16px auto 0 auto' }}>
-            <Button variant="primary" size="slim" fullWidth>Save Settings</Button>
+      <div style={{ flex: '1 1 45%' }}>
+        <Card>
+          <div style={{ padding: 20, borderBottom: '1px solid #DFE3E8' }}>
+            <Text as="h2" variant="headingMd">Template Editor</Text>
           </div>
-        </BlockStack>
-      </Card>
-    </BlockStack>
+
+          <div style={{ padding: 20 }}>
+            {isEditing ? (
+              <TextField
+                labelHidden
+                label="Message"
+                multiline
+                value={message}
+                onChange={setMessage}
+                autoComplete="off"
+              />
+            ) : (
+              <Text as="p">{message}</Text>
+            )}
+
+            <div style={{ marginTop: 6 }}>
+          <span style={{ fontSize: '12px', color: '#6D7175' }}>
+            This is the default message sent to recover abandoned carts.
+          </span>
+        </div>
+
+            <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <Button icon={EditIcon} onClick={() => setIsEditing(!isEditing)}>
+            {isEditing ? "Done" : "Edit Message"}
+          </Button>
+
+          <div
+            onClick={() => {
+              // Handle dynamic variable insertion here
+            }}
+            style={{
+              backgroundColor: '#000',
+              color: '#fff',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'inline-block',
+              textAlign: 'center',
+              minWidth: '200px',
+            }}
+          >
+            Insert Dynamic Variables
+          </div>
+        </div>
+            <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ backgroundColor: '#075E54', padding: '8px 12px', borderRadius: '8px', color: '#FFFFFF' }}>
+                <Checkbox
+                  label={<span style={{ fontWeight: 'bold', color: '#FFFFFF' }}>Via WhatsApp</span>}
+                  checked={viaWhatsapp}
+                  onChange={setViaWhatsapp}
+                />
+              </div>
+
+              <div style={{ backgroundColor: '#4682B4', padding: '8px 12px', borderRadius: '8px', color: '#FFFFFF' }}>
+                <Checkbox
+                  label={<span style={{ fontWeight: 'bold', color: '#FFFFFF' }}>Via Email</span>}
+                  checked={viaEmail}
+                  onChange={setViaEmail}
+                />
+              </div>
+
+              <div style={{ backgroundColor: '#DCDCDC', padding: '8px 12px', borderRadius: '8px', color: '#000000' }}>
+                <Checkbox
+                  label={<span style={{ fontWeight: 'bold', color: '#000000' }}>Via SMS</span>}
+                  checked={viaSms}
+                  onChange={setViaSms}
+                />
+              </div>
+
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div style={{ flex: '1 1 45%' }}>
+        <Card>
+          <div style={{ padding: 20, borderBottom: '1px solid #DFE3E8' }}>
+            <Text as="h2" variant="headingMd">Timezone & Delay</Text>
+          </div>
+
+          <div style={{ padding: 20 }}>
+            <Select
+              label="Timezone"
+              options={timezones}
+              value={selectedTimezone}
+              onChange={setSelectedTimezone}
+            />
+
+            <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+              <TextField
+                label="Delay"
+                type="number"
+                value={delay}
+                onChange={setDelay}
+                autoComplete="off"
+              />
+              <Select
+                label="Unit"
+                options={delayUnits}
+                value={delayUnit}
+                onChange={setDelayUnit}
+              />
+            </div>
+
+            <div style={{ borderTop: '1px solid #DFE3E8', marginTop: 24, paddingTop: 16 }}>
+              <Text as="h2" variant="headingMd">Language Translation</Text>
+
+              <div style={{ marginTop: 16 }}>
+                <Select
+                  label="Translate to"
+                  options={languages}
+                  value={language}
+                  onChange={setLanguage}
+                />
+              </div>
+
+              <div style={{ marginTop: 16 }}>
+                <Button fullWidth size="medium">Save Translation</Button>
+              </div>
+            </div>
+
+          </div>
+        </Card>
+      </div>
+
+    </div>
   );
 }

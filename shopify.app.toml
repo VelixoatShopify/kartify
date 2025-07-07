@@ -3,7 +3,7 @@
 client_id = "5160030e2b4376cd422f54171e2f5eb3"
 name = "Kartify"
 handle = "kartify-5"
-application_url = "https://engine-finances-bangkok-voice.trycloudflare.com"
+application_url = "https://happens-ridge-aids-add.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://engine-finances-bangkok-voice.trycloudflare.com/auth/callback", "https://engine-finances-bangkok-voice.trycloudflare.com/auth/shopify/callback", "https://engine-finances-bangkok-voice.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://happens-ridge-aids-add.trycloudflare.com/auth/callback", "https://happens-ridge-aids-add.trycloudflare.com/auth/shopify/callback", "https://happens-ridge-aids-add.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
