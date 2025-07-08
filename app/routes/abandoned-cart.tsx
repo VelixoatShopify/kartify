@@ -1,23 +1,17 @@
 import { useSearchParams, Link, useNavigate } from "@remix-run/react";
-import { Page, Card, Text, Box, InlineStack, BlockStack, Divider, Image, Button, TextField, Select, Checkbox } from "@shopify/polaris";
+import { Page, Card, Text, Box, InlineStack, BlockStack, Divider, Image, Button, TextField, Select, Checkbox, Modal } from "@shopify/polaris";
 import { useState } from "react";
 import { EditIcon } from "@shopify/polaris-icons";
 
 export default function AbandonedCartPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get("view") || "dashboard";
 
   return (
     <Page title="Abandoned Cart Recovery">
-      <div
-        style={{
-          maxWidth: '800px',
-          margin: '0 auto',
-          borderBottom: '1px solid #dfe3e8',
-          backgroundColor: '#f4f6f8',
-          borderRadius: '8px',
-        }}
-      >
+      
+      {/* Navigation Menu */}
+      <div style={{ maxWidth: '800px', margin: '0 auto', borderBottom: '1px solid #dfe3e8', backgroundColor: '#f4f6f8', borderRadius: '8px' }}>
         <Box padding="400">
           <InlineStack align="center" gap="600">
             <Link to="/abandoned-cart?view=dashboard" style={{ textDecoration: 'none' }}>
@@ -25,13 +19,11 @@ export default function AbandonedCartPage() {
                 <Text as="span" fontWeight="bold" variant="headingMd">Dashboard</Text>
               </div>
             </Link>
-
             <Link to="/abandoned-cart?view=table" style={{ textDecoration: 'none' }}>
               <div style={navButtonStyle(view === "table")}> 
                 <Text as="span" fontWeight="bold" variant="headingMd">Cart Recovery Table</Text>
               </div>
             </Link>
-
             <Link to="/abandoned-cart?view=settings" style={{ textDecoration: 'none' }}>
               <div style={navButtonStyle(view === "settings")}> 
                 <Text as="span" fontWeight="bold" variant="headingMd">Settings</Text>
@@ -41,6 +33,7 @@ export default function AbandonedCartPage() {
         </Box>
       </div>
 
+      {/* Page Content based on view */}
       <Box padding="400">
         {view === "dashboard" && <DashboardComponent />}
         {view === "table" && <TableComponent />}
@@ -50,6 +43,7 @@ export default function AbandonedCartPage() {
   );
 }
 
+// Styling for active/inactive navigation buttons
 const navButtonStyle = (active: boolean) => ({
   padding: '10px 16px',
   borderRadius: '999px',
@@ -58,56 +52,31 @@ const navButtonStyle = (active: boolean) => ({
   color: active ? '#000' : '#666',
 });
 
+
+{/*Abandoned Cart - DASHBAORD*/}
 function DashboardComponent() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <Box padding="400">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <Card>
-            <BlockStack gap="100">
-              <Text as="h3" variant="headingMd">Total Abandoned Cart</Text>
-              <Text as="p" fontWeight="bold" variant="heading2xl">30</Text>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="100">
-              <Text as="h3" variant="headingMd">Recovery Rate</Text>
-              <Text as="p" fontWeight="bold" variant="heading2xl">40%</Text>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="200">
-              <InlineStack align="space-between">
-                <Text as="h3" variant="headingMd">Recovered Revenue</Text>
-                <Text as="span" fontWeight="bold">$490k</Text>
-              </InlineStack>
-              <Divider />
-              <Box padding="200">
-                <Image source="/images/chart-placeholder.png" alt="Chart Placeholder" width={200} />
-              </Box>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="200">
-              <Text as="h3" variant="headingMd">Recovery Channel Used</Text>
-              <BlockStack gap="100">
-                <InlineStack align="space-between"><Text as="span">WhatsApp</Text><Text as="span">30%</Text></InlineStack>
-                <InlineStack align="space-between"><Text as="span">Email</Text><Text as="span">70%</Text></InlineStack>
-                <InlineStack align="space-between"><Text as="span">Received</Text><Text as="span">20%</Text></InlineStack>
-              </BlockStack>
-            </BlockStack>
-          </Card>
+          <Card><BlockStack gap="100"><Text as="h3" variant="headingMd">Total Abandoned Cart</Text><Text as="p" fontWeight="bold" variant="heading2xl">30</Text></BlockStack></Card>
+          <Card><BlockStack gap="100"><Text as="h3" variant="headingMd">Recovery Rate</Text><Text as="p" fontWeight="bold" variant="heading2xl">40%</Text></BlockStack></Card>
+          <Card><BlockStack gap="200"><InlineStack align="space-between"><Text as="h3" variant="headingMd">Recovered Revenue</Text><Text as="span" fontWeight="bold">$490k</Text></InlineStack><Divider /><Box padding="200"><Image source="/images/chart-placeholder.png" alt="Chart Placeholder" width={200} /></Box></BlockStack></Card>
+          <Card><BlockStack gap="200"><Text as="h3" variant="headingMd">Recovery Channel Used</Text><BlockStack gap="100"><InlineStack align="space-between"><Text as="span">WhatsApp</Text><Text as="span">30%</Text></InlineStack><InlineStack align="space-between"><Text as="span">Email</Text><Text as="span">70%</Text></InlineStack><InlineStack align="space-between"><Text as="span">Received</Text><Text as="span">20%</Text></InlineStack></BlockStack></BlockStack></Card>
         </div>
       </Box>
     </div>
   );
 }
 
+
+{/*Abandoned Cart - TABLE */}
 function TableComponent() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalActive, setModalActive] = useState(false);
+  const [viaWhatsapp, setViaWhatsapp] = useState(false);
+  const [viaEmail, setViaEmail] = useState(false);
+  const [viaSms, setViaSms] = useState(false);
   const navigate = useNavigate();
 
   const cartData = [
@@ -125,11 +94,14 @@ function TableComponent() {
   const currentItems = cartData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(cartData.length / itemsPerPage);
 
+  const recoveryButtonStyle = { backgroundColor: '#000', color: '#fff', borderRadius: '8px' };
+
   return (
     <div style={{ maxWidth: '1100px', margin: '20px auto' }}>
       <Card>
         <BlockStack gap="400">
           <Box padding="400">
+            {/* Table Headers */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 2fr 1fr 1fr', paddingBottom: '16px' }}>
               <Text as="h4" variant="headingMd">Customer</Text>
               <Text as="h4" variant="headingMd">Cart Items</Text>
@@ -138,6 +110,7 @@ function TableComponent() {
               <Text as="h4" variant="headingMd">Status</Text>
             </div>
 
+             {/* Table Rows */}
             {currentItems.map((cart, index) => (
               <div key={index} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 2fr 1fr 1fr', padding: '10px 0', borderBottom: '1px solid #eee' }}>
                 <Text as="span">{cart.customer}</Text>
@@ -146,7 +119,11 @@ function TableComponent() {
                 <Text as="span">{cart.value}</Text>
                 <div>
                   {cart.status === "Pending" ? (
-                    <Button size="slim" onClick={() => navigate('/abandoned-cart?view=settings')}>Recover Now</Button>
+                    <div style={{ backgroundColor: '#000', borderRadius: '8px', display: 'inline-block' }}>
+                      <Button size="slim" onClick={() => setModalActive(true)}>
+                        Recover Now
+                      </Button>
+                    </div>
                   ) : (
                     <Text as="span">Recovered</Text>
                   )}
@@ -155,6 +132,7 @@ function TableComponent() {
             ))}
           </Box>
 
+          {/* Pagination Controls */}
           <Box padding="400">
             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
               <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>Previous</button>
@@ -166,18 +144,33 @@ function TableComponent() {
           </Box>
         </BlockStack>
       </Card>
+      
+      {/*Recovery Actions - Dialog*/}
+      <Modal
+        open={modalActive}
+        onClose={() => setModalActive(false)}
+        title="Select Recovery Channels"
+        primaryAction={{ content: 'Send', onAction: () => setModalActive(false), destructive: false }}
+      >
+        <Modal.Section>
+          <BlockStack gap="200">
+            <Checkbox label={<span style={{ fontWeight: 'bold' }}>Via WhatsApp</span>} checked={viaWhatsapp} onChange={setViaWhatsapp} />
+            <Checkbox label={<span style={{ fontWeight: 'bold' }}>Via Email</span>} checked={viaEmail} onChange={setViaEmail} />
+            <Checkbox label={<span style={{ fontWeight: 'bold' }}>Via SMS</span>} checked={viaSms} onChange={setViaSms} />
+          </BlockStack>
+        </Modal.Section>
+      </Modal>
     </div>
   );
 }
 
+
+{/*Abandoned Cart - SETTINGS*/}
 function SettingsComponent() {
   const [message, setMessage] = useState("Hey [Name], we noticed you left some items in your cart. Complete your purchase now before they're gone!");
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
   const [delay, setDelay] = useState("0");
   const [delayUnit, setDelayUnit] = useState("minutes");
-  const [viaWhatsapp, setViaWhatsapp] = useState(false);
-  const [viaEmail, setViaEmail] = useState(false);
-  const [viaSms, setViaSms] = useState(false);
   const [language, setLanguage] = useState("en");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -201,140 +194,52 @@ function SettingsComponent() {
   ];
 
   return (
-    <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-
-      <div style={{ flex: '1 1 45%' }}>
-        <Card>
-          <div style={{ padding: 20, borderBottom: '1px solid #DFE3E8' }}>
-            <Text as="h2" variant="headingMd">Template Editor</Text>
-          </div>
-
-          <div style={{ padding: 20 }}>
-            {isEditing ? (
-              <TextField
-                labelHidden
-                label="Message"
-                multiline
-                value={message}
-                onChange={setMessage}
-                autoComplete="off"
-              />
-            ) : (
-              <Text as="p">{message}</Text>
-            )}
-
-            <div style={{ marginTop: 6 }}>
-          <span style={{ fontSize: '12px', color: '#6D7175' }}>
-            This is the default message sent to recover abandoned carts.
-          </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}> 
+      {/*Template Editor */}
+      <Card>
+        <div style={{ padding: 20, borderBottom: '1px solid #DFE3E8' }}>
+          <Text as="h2" variant="headingMd">Template Editor</Text>
         </div>
-
-            <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <Button icon={EditIcon} onClick={() => setIsEditing(!isEditing)}>
-            {isEditing ? "Done" : "Edit Message"}
-          </Button>
-
-          <div
-            onClick={() => {
-              // Handle dynamic variable insertion here
-            }}
-            style={{
-              backgroundColor: '#000',
-              color: '#fff',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              fontSize: '13px',
-              cursor: 'pointer',
-              display: 'inline-block',
-              textAlign: 'center',
-              minWidth: '200px',
-            }}
-          >
-            Insert Dynamic Variables
+        <div style={{ padding: 20 }}>
+          {isEditing ? (
+            <TextField labelHidden label="Message" multiline value={message} onChange={setMessage} autoComplete="off" />
+          ) : (
+            <Text as="p">{message}</Text>
+          )}
+          <div style={{ marginTop: 6 }}>
+            <span style={{ fontSize: '12px', color: '#6D7175' }}>This is the default message sent to recover abandoned carts.</span>
+          </div>
+          <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: '12px' }}>
+            <Button icon={EditIcon} onClick={() => setIsEditing(!isEditing)}>{isEditing ? "Done" : "Edit Message"}</Button>
           </div>
         </div>
-            <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ backgroundColor: '#075E54', padding: '8px 12px', borderRadius: '8px', color: '#FFFFFF' }}>
-                <Checkbox
-                  label={<span style={{ fontWeight: 'bold', color: '#FFFFFF' }}>Via WhatsApp</span>}
-                  checked={viaWhatsapp}
-                  onChange={setViaWhatsapp}
-                />
-              </div>
-
-              <div style={{ backgroundColor: '#4682B4', padding: '8px 12px', borderRadius: '8px', color: '#FFFFFF' }}>
-                <Checkbox
-                  label={<span style={{ fontWeight: 'bold', color: '#FFFFFF' }}>Via Email</span>}
-                  checked={viaEmail}
-                  onChange={setViaEmail}
-                />
-              </div>
-
-              <div style={{ backgroundColor: '#DCDCDC', padding: '8px 12px', borderRadius: '8px', color: '#000000' }}>
-                <Checkbox
-                  label={<span style={{ fontWeight: 'bold', color: '#000000' }}>Via SMS</span>}
-                  checked={viaSms}
-                  onChange={setViaSms}
-                />
-              </div>
-
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div style={{ flex: '1 1 45%' }}>
-        <Card>
+      </Card>
+      
+      {/*TIMEZONE DELAY AND LANGUAGE*/}
+      <Card>
+          {/*Timezone and delay*/}
           <div style={{ padding: 20, borderBottom: '1px solid #DFE3E8' }}>
             <Text as="h2" variant="headingMd">Timezone & Delay</Text>
           </div>
-
           <div style={{ padding: 20 }}>
-            <Select
-              label="Timezone"
-              options={timezones}
-              value={selectedTimezone}
-              onChange={setSelectedTimezone}
-            />
-
-            <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-              <TextField
-                label="Delay"
-                type="number"
-                value={delay}
-                onChange={setDelay}
-                autoComplete="off"
-              />
-              <Select
-                label="Unit"
-                options={delayUnits}
-                value={delayUnit}
-                onChange={setDelayUnit}
-              />
-            </div>
-
-            <div style={{ borderTop: '1px solid #DFE3E8', marginTop: 24, paddingTop: 16 }}>
-              <Text as="h2" variant="headingMd">Language Translation</Text>
-
-              <div style={{ marginTop: 16 }}>
-                <Select
-                  label="Translate to"
-                  options={languages}
-                  value={language}
-                  onChange={setLanguage}
-                />
-              </div>
-
-              <div style={{ marginTop: 16 }}>
-                <Button fullWidth size="medium">Save Translation</Button>
-              </div>
-            </div>
-
+          <Select label="Timezone" options={timezones} value={selectedTimezone} onChange={setSelectedTimezone} />
+          <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+            <TextField label="Delay" type="number" value={delay} onChange={setDelay} autoComplete="off" />
+            <Select label="Unit" options={delayUnits} value={delayUnit} onChange={setDelayUnit} />
           </div>
-        </Card>
-      </div>
 
+          {/*Language Translations*/}
+          <div style={{ borderTop: '1px solid #DFE3E8', marginTop: 24, paddingTop: 16 }}>
+            <Text as="h2" variant="headingMd">Language Translation</Text>
+            <div style={{ marginTop: 16 }}>
+              <Select label="Translate to" options={languages} value={language} onChange={setLanguage} />
+            </div>
+            <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center', gap: '12px' }}>
+            <Button>Save translation</Button>
+          </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
