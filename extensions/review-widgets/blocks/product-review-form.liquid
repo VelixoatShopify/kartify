@@ -1,0 +1,23 @@
+<!-- blocks/product-review-form.liquid -->
+<div class="review-form-widget" style="background-color: {{ block.settings.background_color }}; font-size: {{ block.settings.font_size }}px;">
+  <h3>{{ block.settings.heading }}</h3>
+
+  <form method="post" action="/apps/reviews/submit">
+    <input type="hidden" name="product_id" value="{{ product.id }}">
+    
+    <label>Name</label>
+    <input type="text" name="name" required />
+    
+    <label>Rating</label>
+    <select name="rating" required>
+      {% for i in (1..5) %}
+        <option value="{{ i }}">{{ i }}</option>
+      {% endfor %}
+    </select>
+    
+    <label>Comment</label>
+    <textarea name="comment" required></textarea>
+    
+    <button type="submit">Submit</button>
+  </form>
+</div>
