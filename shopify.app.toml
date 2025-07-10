@@ -3,7 +3,7 @@
 client_id = "5160030e2b4376cd422f54171e2f5eb3"
 name = "Kartify"
 handle = "kartify-5"
-application_url = "https://display-stars-leone-interstate.trycloudflare.com"
+application_url = "https://pan-puts-astronomy-municipality.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://display-stars-leone-interstate.trycloudflare.com/auth/callback", "https://display-stars-leone-interstate.trycloudflare.com/auth/shopify/callback", "https://display-stars-leone-interstate.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://pan-puts-astronomy-municipality.trycloudflare.com/auth/callback", "https://pan-puts-astronomy-municipality.trycloudflare.com/auth/shopify/callback", "https://pan-puts-astronomy-municipality.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false

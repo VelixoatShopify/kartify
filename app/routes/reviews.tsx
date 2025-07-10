@@ -16,26 +16,17 @@ export default function ReviewCollection() {
   // Styling State
   const [formBackgroundColor, setFormBackgroundColor] = useState({ hue: 120, brightness: 1, saturation: 1 });
   const [topBackgroundColor, setTopBackgroundColor] = useState({ hue: 60, brightness: 1, saturation: 1 });
-  const [formFontSize, setFormFontSize] = useState(16);
-  const [topFontSize, setTopFontSize] = useState(16);
+  const [formFontSize, setFormFontSize] = useState<number>(16);
+  const [topFontSize, setTopFontSize] = useState<number>(16);
 
   const [activeSection, setActiveSection] = useState<'basic' | 'background' | 'font' | null>(null);
   const [selectedProduct, setSelectedProduct] = useState("Red T-Shirt");
 
   const tabs = [
-    {
-      id: 'review-dashboard',
-      content: 'Review Dashboard',
-      panelID: 'review-dashboard-content'
-    },
-    {
-      id: 'widget-style',
-      content: 'Widget & Styles',
-      panelID: 'widget-style-content'
-    }
+    { id: 'review-dashboard', content: 'Review Dashboard', panelID: 'review-dashboard-content' },
+    { id: 'widget-style', content: 'Widget & Styles', panelID: 'widget-style-content' }
   ];
 
-  // Sample Data for Logs
   const productOptions = [
     { label: "Red T-Shirt", value: "Red T-Shirt" },
     { label: "Blue Jeans", value: "Blue Jeans" },
@@ -54,8 +45,9 @@ export default function ReviewCollection() {
     <Page>
       <TitleBar title="Review Collection" />
       <Tabs tabs={tabs} selected={selectedTab} onSelect={setSelectedTab} fitted>
-        {/* Tab 1: Review Dashboard */}
         <Layout.Section>
+
+          {/* Tab 1: Review Dashboard */}
           {selectedTab === 0 && (
             <BlockStack gap="400">
               <Card>
@@ -66,18 +58,23 @@ export default function ReviewCollection() {
                   value={selectedProduct}
                 />
               </Card>
+
               <Card>
-                <Text>Graph placeholder for future data visualization (e.g., daily reviews)</Text>
+                <Text as="p" variant="bodyMd">Graph placeholder for future data visualization (e.g., daily reviews)</Text>
               </Card>
-              <Card title="Review Logs">
+
+              <Card>
                 <BlockStack gap="200">
+                  <Text as="h3" variant="headingSm">Review Logs</Text>
                   {filteredLogs.map((log, index) => (
-                    <Card key={index} sectioned>
-                      <Text strong>{log.product}</Text>
-                      <Text>Reviewer: {log.user}</Text>
-                      <Text>Rating: {"⭐".repeat(log.rating)}</Text>
-                      <Text>Comment: {log.review}</Text>
-                      <Text>Submitted on: {log.date}</Text>
+                    <Card key={index} padding="300">
+                      <BlockStack gap="100">
+                        <Text as="span" variant="bodyMd" fontWeight="bold">{log.product}</Text>
+                        <Text as="span" variant="bodyMd">Reviewer: {log.user}</Text>
+                        <Text as="span" variant="bodyMd">Rating: {"⭐".repeat(log.rating)}</Text>
+                        <Text as="span" variant="bodyMd">Comment: {log.review}</Text>
+                        <Text as="span" variant="bodyMd">Submitted on: {log.date}</Text>
+                      </BlockStack>
                     </Card>
                   ))}
                 </BlockStack>
@@ -87,12 +84,14 @@ export default function ReviewCollection() {
 
           {/* Tab 2: Widget & Styles */}
           {selectedTab === 1 && (
-            <Card title="Widget Settings" padding="600">
+            <Card padding="600">
               <BlockStack gap="400">
+
                 {/* Basics Section */}
                 <Button onClick={() => setActiveSection(activeSection === 'basic' ? null : 'basic')}>
                   {activeSection === 'basic' ? 'Hide' : 'Show'} Basics
                 </Button>
+
                 {activeSection === 'basic' && (
                   <BlockStack gap="400">
                     <Checkbox label="Enable Product Page Review Form" checked={enableFormWidget} onChange={setEnableFormWidget} />
@@ -100,6 +99,7 @@ export default function ReviewCollection() {
                       label="Heading Text for Product Page Widget"
                       value={formWidgetHeading}
                       onChange={setFormWidgetHeading}
+                      autoComplete="off"
                     />
 
                     <Checkbox label="Enable Top Reviewed Products Widget" checked={enableTopWidget} onChange={setEnableTopWidget} />
@@ -107,6 +107,7 @@ export default function ReviewCollection() {
                       label="Heading Text for Top Reviewed Widget"
                       value={topWidgetHeading}
                       onChange={setTopWidgetHeading}
+                      autoComplete="off"
                     />
                   </BlockStack>
                 )}
@@ -115,16 +116,17 @@ export default function ReviewCollection() {
                 <Button onClick={() => setActiveSection(activeSection === 'background' ? null : 'background')}>
                   {activeSection === 'background' ? 'Hide' : 'Show'} Background Colors
                 </Button>
+
                 {activeSection === 'background' && (
                   <BlockStack gap="300">
-                    <Text>Product Page Widget Background</Text>
+                    <Text as="p" variant="bodyMd">Product Page Widget Background</Text>
                     <InlineStack align="start">
                       <div style={{ borderRadius: 8, overflow: "hidden", width: 80 }}>
                         <ColorPicker onChange={setFormBackgroundColor} color={formBackgroundColor} />
                       </div>
                     </InlineStack>
 
-                    <Text>Top Reviewed Widget Background</Text>
+                    <Text as="p" variant="bodyMd">Top Reviewed Widget Background</Text>
                     <InlineStack align="start">
                       <div style={{ borderRadius: 8, overflow: "hidden", width: 80 }}>
                         <ColorPicker onChange={setTopBackgroundColor} color={topBackgroundColor} />
@@ -137,32 +139,35 @@ export default function ReviewCollection() {
                 <Button onClick={() => setActiveSection(activeSection === 'font' ? null : 'font')}>
                   {activeSection === 'font' ? 'Hide' : 'Show'} Font Sizes
                 </Button>
+
                 {activeSection === 'font' && (
                   <BlockStack gap="300">
-                    <Text>Product Page Widget Font Size: {formFontSize}px</Text>
+                    <Text as="p" variant="bodyMd">Product Page Widget Font Size: {formFontSize}px</Text>
                     <RangeSlider
                       label="Font Size"
                       value={formFontSize}
-                      onChange={setFormFontSize}
+                      onChange={(val) => setFormFontSize(typeof val === 'number' ? val : formFontSize)}
                       output
                       min={10}
                       max={30}
                     />
 
-                    <Text>Top Reviewed Widget Font Size: {topFontSize}px</Text>
+                    <Text as="p" variant="bodyMd">Top Reviewed Widget Font Size: {topFontSize}px</Text>
                     <RangeSlider
                       label="Font Size"
                       value={topFontSize}
-                      onChange={setTopFontSize}
+                      onChange={(val) => setTopFontSize(typeof val === 'number' ? val : topFontSize)}
                       output
                       min={10}
                       max={30}
                     />
                   </BlockStack>
                 )}
+
               </BlockStack>
             </Card>
           )}
+
         </Layout.Section>
       </Tabs>
     </Page>

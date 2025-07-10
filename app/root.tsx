@@ -42,7 +42,7 @@ export default function Root() {
             <NavMenu>
               <Link to="/" rel="home">Home</Link>
               <Link to="/abandoned-cart">Abandoned Cart</Link>
-              <Link to="/whatsapp">Inventory Alerts</Link>
+              <Link to="/inventory">Inventory Alerts</Link>
               <Link to="/reviews">Review Collection</Link>
               <Link to="/bundling">Product Bundling</Link>
               <Link to="/invoices">Invoice Generation</Link>

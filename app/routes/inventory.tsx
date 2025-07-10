@@ -23,8 +23,7 @@ const mockProducts = [
     sku: "TSH-RED",
     stock: 5,
     threshold: 10,
-    image:
-      "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/red-tshirt.png",
+    image: "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/red-tshirt.png",
   },
   {
     id: "2",
@@ -32,8 +31,7 @@ const mockProducts = [
     sku: "JEAN-BLU",
     stock: 20,
     threshold: 15,
-    image:
-      "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/blue-jeans.png",
+    image: "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/blue-jeans.png",
   },
   {
     id: "3",
@@ -41,8 +39,7 @@ const mockProducts = [
     sku: "SNK-001",
     stock: 0,
     threshold: 5,
-    image:
-      "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/sneakers.png",
+    image: "https://cdn.shopify.com/s/files/1/0262/4071/2726/products/sneakers.png",
   },
 ];
 
@@ -54,10 +51,10 @@ export default function InventoryAlert() {
   const [globalThreshold, setGlobalThreshold] = useState("10");
 
   // State to filter products based on stock status
-  const [filter, setFilter] = useState("ALL");
+  const [filter, setFilter] = useState<"ALL" | "LOW" | "OUT">("ALL");
 
   // Update threshold for individual product
-  const updateThreshold = (id, newThreshold) => {
+  const updateThreshold = (id: string, newThreshold: string) => {
     setProducts((prev) =>
       prev.map((product) =>
         product.id === id ? { ...product, threshold: Number(newThreshold) } : product
@@ -75,9 +72,9 @@ export default function InventoryAlert() {
   // Table rows for DataTable
   const rows = filteredProducts.map((product) => [
     // Product image and title
-    <InlineStack gap="200">
+    <InlineStack gap="200" align="center">
       <Thumbnail source={product.image} alt={product.title} size="small" />
-      <Text variant="bodyMd">{product.title}</Text>
+      <Text as="span" variant="bodyMd">{product.title}</Text>
     </InlineStack>,
 
     // SKU
@@ -88,6 +85,7 @@ export default function InventoryAlert() {
 
     // Editable threshold input
     <TextField
+      label=""
       value={String(product.threshold)}
       type="number"
       onChange={(val) => updateThreshold(product.id, val)}
@@ -102,9 +100,7 @@ export default function InventoryAlert() {
     ),
 
     // Smart action placeholder (Reorder Now)
-    <Button size="slim" onClick={() => alert("Reorder form (coming soon)")}>
-      Reorder Now
-    </Button>,
+    <Button size="slim" onClick={() => alert("Reorder form (coming soon)")}>Reorder Now</Button>,
   ]);
 
   return (
@@ -117,9 +113,8 @@ export default function InventoryAlert() {
           <Card padding="600">
             <BlockStack gap="500">
               {/* Page description */}
-              <Text variant="bodyMd" as="p">
-                Monitor product stock and receive alerts when items go below
-                threshold.
+              <Text as="p" variant="bodyMd">
+                Monitor product stock and receive alerts when items go below threshold.
               </Text>
 
               {/* Global default threshold setting */}
@@ -129,73 +124,37 @@ export default function InventoryAlert() {
                   type="number"
                   value={globalThreshold}
                   onChange={setGlobalThreshold}
+                  autoComplete="off"
                   helpText="This threshold will apply to new products by default."
                 />
-                <Button variant="plain" onClick={() => alert("Apply to all")}>
-                  Apply to All Products
-                </Button>
+                <Button variant="plain" onClick={() => alert("Apply to all")}>Apply to All Products</Button>
               </InlineStack>
 
               {/* Filter buttons */}
               <InlineStack gap="300">
-                <Button
-                  pressed={filter === "ALL"}
-                  onClick={() => setFilter("ALL")}
-                >
-                  All Products
-                </Button>
-                <Button
-                  pressed={filter === "LOW"}
-                  onClick={() => setFilter("LOW")}
-                >
-                  Low Stock Only
-                </Button>
-                <Button
-                  pressed={filter === "OUT"}
-                  onClick={() => setFilter("OUT")}
-                >
-                  Out of Stock Only
-                </Button>
+                <Button pressed={filter === "ALL"} onClick={() => setFilter("ALL")}>All Products</Button>
+                <Button pressed={filter === "LOW"} onClick={() => setFilter("LOW")}>Low Stock Only</Button>
+                <Button pressed={filter === "OUT"} onClick={() => setFilter("OUT")}>Out of Stock Only</Button>
               </InlineStack>
 
               {/* Inventory table */}
               <DataTable
-                columnContentTypes={[
-                  "text", // Product
-                  "text", // SKU
-                  "numeric", // Stock
-                  "numeric", // Threshold
-                  "text", // Status
-                  "text", // Action
-                ]}
-                headings={[
-                  "Product",
-                  "SKU",
-                  "Stock",
-                  "Threshold",
-                  "Status",
-                  "Smart Action",
-                ]}
+                columnContentTypes={["text", "text", "numeric", "numeric", "text", "text"]}
+                headings={["Product", "SKU", "Stock", "Threshold", "Status", "Smart Action"]}
                 rows={rows}
               />
 
               {/* Action buttons for export, bulk edit, and logs */}
               <InlineStack gap="400">
-                <Button onClick={() => alert("Export CSV (coming soon)")}>
-                  Export Inventory Report
-                </Button>
-                <Button onClick={() => alert("Bulk Edit (coming soon)")}>
-                  Bulk Edit Thresholds
-                </Button>
-                <Button onClick={() => alert("View Alert Logs (coming soon)")}>
-                  View Alert Logs
-                </Button>
+                <Button onClick={() => alert("Export CSV (coming soon)")}>Export Inventory Report</Button>
+                <Button onClick={() => alert("Bulk Edit (coming soon)")}>Bulk Edit Thresholds</Button>
+                <Button onClick={() => alert("View Alert Logs (coming soon)")}>View Alert Logs</Button>
               </InlineStack>
 
               {/* Notification and user permission settings (UI only) */}
-              <Card subdued>
+              <Card padding="300">
                 <BlockStack gap="300">
-                  <Text variant="headingSm">Notifications & Permissions</Text>
+                  <Text as="h3" variant="headingSm">Notifications & Permissions</Text>
 
                   {/* Email alerts checkbox (future backend) */}
                   <Checkbox
