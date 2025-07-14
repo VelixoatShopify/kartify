@@ -3,113 +3,123 @@ import {
   Page,
   Layout,
   Card,
-  TextField,
-  Button,
-  BlockStack,
   Text,
-  InlineStack,
-  Divider,
+  IndexTable,
+  Button,
   Box,
 } from "@shopify/polaris";
-import { useNavigation } from "@remix-run/react";
 
-export default function InvoicePage() {
-  const navigation = useNavigation();
+// Mock data
+const mockOrders = [
+  {
+    id: "1001",
+    name: "#1001",
+    customer: "Aayush Mishra",
+    date: "2025-07-13",
+    total: 1899,
+    email: "aayush@example.com",
+    address: "Delhi, India",
+    products: [
+      { name: "Product A", quantity: 2 },
+      { name: "Product B", quantity: 1 },
+    ],
+  },
+  {
+    id: "1002",
+    name: "#1002",
+    customer: "Rohan Singh",
+    date: "2025-07-12",
+    total: 2499,
+    email: "rohan@example.com",
+    address: "Mumbai, India",
+    products: [{ name: "Product C", quantity: 3 }],
+  },
+  {
+    id: "1003",
+    name: "#1003",
+    customer: "Megha Kapoor",
+    date: "2025-07-11",
+    total: 1399,
+    email: "megha@example.com",
+    address: "Bangalore, India",
+    products: [
+      { name: "Product D", quantity: 1 },
+      { name: "Product E", quantity: 2 },
+    ],
+  },
+];
 
-  const [orderId, setOrderId] = useState("");
-  const [orderData, setOrderData] = useState<any>(null);
+export default function InvoiceOrderListPage() {
+  const [orders] = useState(mockOrders);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  const handleSearchOrder = () => {
-    // Simulate fetching order (this will be replaced by Shopify API)
-    const mockOrder = {
-      id: orderId,
-      customer: {
-        name: "Rohan Singh",
-        email: "rohan@example.com",
-      },
-      items: [
-        { name: "T-shirt", quantity: 2, price: 599 },
-        { name: "Sneakers", quantity: 1, price: 1999 },
-      ],
-      subtotal: 3197,
-      tax: 320,
-      total: 3517,
-      date: "2025-07-13",
-    };
-
-    setOrderData(mockOrder);
-  };
-
-  const handleGenerateInvoice = () => {
-    // Later this will trigger PDF creation
-    alert("📄 Invoice generated successfully!");
-  };
+  const rowMarkup = orders.map((order, index) => (
+    <IndexTable.Row
+      id={order.id}
+      key={order.id}
+      selected={selectedOrders.includes(order.id)}
+      position={index}
+    >
+      <IndexTable.Cell>{order.name}</IndexTable.Cell>
+      <IndexTable.Cell>{order.customer}</IndexTable.Cell>
+      <IndexTable.Cell>{order.date}</IndexTable.Cell>
+      <IndexTable.Cell>₹{order.total}</IndexTable.Cell>
+      <IndexTable.Cell>
+        <Text>Email: {order.email}</Text>
+        <Text>Address: {order.address}</Text>
+        <Text>Products:</Text>
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          {order.products.map((product, idx) => (
+            <li key={idx}>
+              {product.name} × {product.quantity}
+            </li>
+          ))}
+        </ul>
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  ));
 
   return (
-    <Page title="Invoice Generator">
+    <Page title="All Orders">
       <Layout>
         <Layout.Section>
-          <Card padding="400">
-            <BlockStack gap="400">
-              <TextField
-                label="Enter Order ID"
-                value={orderId}
-                onChange={setOrderId}
-                autoComplete="off"
-              />
-              <InlineStack align="end">
-                <Button onClick={handleSearchOrder} disabled={!orderId}>
-                  Search Order
-                </Button>
-              </InlineStack>
-            </BlockStack>
+          <Card>
+            <IndexTable
+              resourceName={{ singular: "order", plural: "orders" }}
+              itemCount={orders.length}
+              selectedItemsCount={selectedOrders.length}
+              onSelectionChange={(selected) =>
+                setSelectedOrders(selected as string[])
+              }
+              headings={[
+                { title: "Order ID" },
+                { title: "Customer" },
+                { title: "Date" },
+                { title: "Total" },
+                { title: "Details" },
+              ]}
+            >
+              {rowMarkup}
+            </IndexTable>
+
+            <Box padding="4" display="flex" gap="4">
+              <Button
+                onClick={() =>
+                  alert("PDFs downloaded for: " + selectedOrders.join(", "))
+                }
+              >
+                Download PDF
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  alert("Invoices sent to: " + selectedOrders.join(", "))
+                }
+              >
+                Send Invoice
+              </Button>
+            </Box>
           </Card>
-
-          {orderData && (
-            <Card padding="400" title={`Invoice Preview – Order #${orderData.id}`}>
-              <BlockStack gap="300">
-                <Text variant="bodyMd">
-                  <strong>Date:</strong> {orderData.date}
-                </Text>
-                <Text variant="bodyMd">
-                  <strong>Customer:</strong> {orderData.customer.name} ({orderData.customer.email})
-                </Text>
-
-                <Divider />
-
-                <Text variant="headingSm">Items:</Text>
-                {orderData.items.map((item: any, index: number) => (
-                  <Box key={index}>
-                    <Text variant="bodyMd">
-                      • {item.name} – Qty: {item.quantity} × ₹{item.price}
-                    </Text>
-                  </Box>
-                ))}
-
-                <Divider />
-
-                <Text variant="bodyMd">
-                  <strong>Subtotal:</strong> ₹{orderData.subtotal}
-                </Text>
-                <Text variant="bodyMd">
-                  <strong>Tax:</strong> ₹{orderData.tax}
-                </Text>
-                <Text variant="bodyMd">
-                  <strong>Total:</strong> ₹{orderData.total}
-                </Text>
-
-                <InlineStack align="end">
-                  <Button
-                    primary
-                    onClick={handleGenerateInvoice}
-                    loading={navigation.state === "submitting"}
-                  >
-                    Generate Invoice PDF
-                  </Button>
-                </InlineStack>
-              </BlockStack>
-            </Card>
-          )}
         </Layout.Section>
       </Layout>
     </Page>
