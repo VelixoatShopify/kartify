@@ -3,7 +3,7 @@
 client_id = "5160030e2b4376cd422f54171e2f5eb3"
 name = "Kartify"
 handle = "kartify-5"
-application_url = "https://recreation-combines-locally-cancellation.trycloudflare.com"
+application_url = "https://proof-gentle-usb-detroit.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://recreation-combines-locally-cancellation.trycloudflare.com/auth/callback", "https://recreation-combines-locally-cancellation.trycloudflare.com/auth/shopify/callback", "https://recreation-combines-locally-cancellation.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://proof-gentle-usb-detroit.trycloudflare.com/auth/callback", "https://proof-gentle-usb-detroit.trycloudflare.com/auth/shopify/callback", "https://proof-gentle-usb-detroit.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
