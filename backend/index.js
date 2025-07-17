@@ -1,7 +1,8 @@
+// backend/index.js
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { shopify } = require("./shopify");
+const { shopify, sessionStorage, getAdminClient } = require("./shopify"); // Added getAdminClient & sessionStorage import
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,14 +28,13 @@ app.get("/auth", async (req, res) => {
       rawRequest: req,
       rawResponse: res,
     });
-    // ⚠️ Don't manually redirect here — SDK handles it
+    // ⚠️ SDK handles redirect
   } catch (e) {
     console.error("❌ Auth begin error", e);
     return res.status(500).send("OAuth begin failed");
   }
 });
 
-// ✅ OAuth Callback
 // ✅ OAuth Callback
 app.get("/auth/callback", async (req, res) => {
   try {
@@ -43,17 +43,8 @@ app.get("/auth/callback", async (req, res) => {
       rawResponse: res,
     });
 
-    const session = result.session; // ✅ FIXED: extract session from result
-
-    console.log("✅ FULL session object:", session);
-
-    if (!session || !session.shop || !session.accessToken) {
-      console.error("❌ Missing session data:", session);
-      return res.status(500).send("OAuth failed: session data incomplete");
-    }
-
+    const session = result.session;
     console.log("✅ Authenticated shop:", session.shop);
-    console.log("🔐 Access token:", session.accessToken);
 
     return res.redirect(
       `https://admin.shopify.com/store/${session.shop.split(".myshopify.com")[0]}/apps/kartify-5?shop=${session.shop}`
@@ -68,5 +59,3 @@ app.get("/auth/callback", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
-
-

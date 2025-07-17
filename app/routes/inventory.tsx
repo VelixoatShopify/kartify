@@ -104,9 +104,8 @@ export default function InventoryAlert() {
   ]);
 
   return (
-    <Page>
+    <Page title="Inventory Alerts">
       {/* Shopify App page title */}
-      <TitleBar title="Inventory Alerts" />
 
       <Layout>
         <Layout.Section>

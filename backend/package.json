@@ -1,16 +1,20 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type":"module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "remix build && nodemon backend/index.js",
+    "build": "remix build",
+    "start": "node backend/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@remix-run/node": "^2.16.8",
     "@shopify/shopify-api": "^11.13.0",
     "@shopify/shopify-app-session-storage-sqlite": "^4.0.18",
     "better-sqlite3": "^12.2.0",

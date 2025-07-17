@@ -62,7 +62,7 @@ export default function BundlingPage() {
         <Layout.Section>
           {actionData?.success && (
             <Card>
-              <BlockStack gap="200" padding="400">
+              <BlockStack gap="200">
                 <Text as="p" variant="bodyMd" tone="success">
                   ✅ {actionData.message}
                 </Text>
@@ -70,7 +70,7 @@ export default function BundlingPage() {
             </Card>
           )}
 
-          <Card padding="400">
+          <Card>
             <form method="POST">
               <BlockStack gap="400">
                 {/* Bundle Details */}
@@ -106,6 +106,7 @@ export default function BundlingPage() {
                   value={discountValue}
                   onChange={setDiscountValue}
                   type="text"
+                  autoComplete="off"
                 />
 
                 <Checkbox
@@ -124,7 +125,7 @@ export default function BundlingPage() {
 
                 <InlineStack wrap={false} gap="400">
                   <Box width="33%">
-                    <Text as="label">Background Color (HEX)</Text>
+                    <Text as="p">Background Color (HEX)</Text>
                     <input
                       type="color"
                       name="backgroundColor"
@@ -135,7 +136,7 @@ export default function BundlingPage() {
                   </Box>
 
                   <Box width="33%">
-                    <Text as="label">Text Color (HEX)</Text>
+                    <Text as="p">Text Color (HEX)</Text>
                     <input
                       type="color"
                       name="textColor"
@@ -146,7 +147,7 @@ export default function BundlingPage() {
                   </Box>
 
                   <Box width="33%">
-                    <Text as="label">Button Color (HEX)</Text>
+                    <Text as="p">Button Color (HEX)</Text>
                     <input
                       type="color"
                       name="buttonColor"
@@ -158,7 +159,7 @@ export default function BundlingPage() {
                 </InlineStack>
 
                 <div>
-                  <Text as="label">Font Size: {fontSize}px</Text>
+                  <Text as="p">Font Size: {fontSize}px</Text>
                   <input
                     type="range"
                     name="fontSize"
@@ -177,37 +178,38 @@ export default function BundlingPage() {
                   Live Preview
                 </Text>
 
-                <Box
-                  padding="400"
-                  borderRadius="200"
-                  background="bg-surface"
-                  style={{
-                    backgroundColor,
-                    color: textColor,
-                    fontSize: `${fontSize}px`,
-                    border: `1px solid #ddd`,
-                  }}
-                >
-                  <Text variant="headingSm">🔥 Bundle Preview</Text>
-                  <p>Buy the combo at ₹{discountValue}</p>
-                  <button
+                <Box padding="400" borderRadius="200" background="bg-surface">
+                  <div
                     style={{
-                      marginTop: "10px",
-                      backgroundColor: buttonColor,
-                      color: "#fff",
-                      padding: "10px 20px",
-                      border: "none",
-                      borderRadius: "6px",
-                      cursor: "pointer",
+                      backgroundColor,
+                      color: textColor,
+                      fontSize: `${fontSize}px`,
+                      border: `1px solid #ddd`,
+                      padding: "16px",
+                      borderRadius: "12px",
                     }}
                   >
-                    Add Bundle to Cart
-                  </button>
+                    <Text variant="headingSm" as="p">🔥 Bundle Preview</Text>
+                    <p>Buy the combo at ₹{discountValue}</p>
+                    <button
+                      style={{
+                        marginTop: "10px",
+                        backgroundColor: buttonColor,
+                        color: "#fff",
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Add Bundle to Cart
+                    </button>
+                  </div>
                 </Box>
 
                 <InlineStack align="end">
                   <Button
-                    primary
+                    variant="primary"
                     submit
                     loading={navigation.state === "submitting"}
                   >

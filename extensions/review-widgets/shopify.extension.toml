@@ -1,3 +1,10 @@
 name = "review-widgets"
 type = "theme"
 
+[extension]
+name = "review-widgets"
+
+[[extension.blocks]]
+name = "Kartify"
+target = "body"
+file = "blocks/kartify-widget.liquid"

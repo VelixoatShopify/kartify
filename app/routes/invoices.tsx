@@ -66,21 +66,24 @@ export default function InvoicePage() {
           </Card>
 
           {orderData && (
-            <Card padding="400" title={`Invoice Preview – Order #${orderData.id}`}>
+            <Card>
               <BlockStack gap="300">
-                <Text variant="bodyMd">
+                <Text variant="headingMd" as="h2">
+                  Invoice Preview – Order #{orderData.id}
+                </Text>
+                <Text variant="bodyMd" as="p">
                   <strong>Date:</strong> {orderData.date}
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   <strong>Customer:</strong> {orderData.customer.name} ({orderData.customer.email})
                 </Text>
 
                 <Divider />
 
-                <Text variant="headingSm">Items:</Text>
+                <Text variant="headingSm" as="p">Items:</Text>
                 {orderData.items.map((item: any, index: number) => (
                   <Box key={index}>
-                    <Text variant="bodyMd">
+                    <Text variant="bodyMd" as="p">
                       • {item.name} – Qty: {item.quantity} × ₹{item.price}
                     </Text>
                   </Box>
@@ -88,24 +91,25 @@ export default function InvoicePage() {
 
                 <Divider />
 
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   <strong>Subtotal:</strong> ₹{orderData.subtotal}
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   <strong>Tax:</strong> ₹{orderData.tax}
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   <strong>Total:</strong> ₹{orderData.total}
                 </Text>
 
-                <InlineStack align="end">
+                <InlineStack align="end" gap="200">
                   <Button
-                    primary
+                    variant="primary"
                     onClick={handleGenerateInvoice}
                     loading={navigation.state === "submitting"}
                   >
                     Generate Invoice PDF
                   </Button>
+                  <Button>Send</Button>
                 </InlineStack>
               </BlockStack>
             </Card>

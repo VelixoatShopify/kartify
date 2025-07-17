@@ -1,13 +1,22 @@
 {% if settings.enable_kartify %}
-  <div id="top-reviewed-widget" style="background: #fff; padding: 16px; margin-bottom: 20px; border-radius: 8px;">
-    <h3 style="font-size: 20px; margin-bottom: 10px;">Top Reviews</h3>
-    <p>Check out our top-rated products!</p>
-  </div>
 
-  <div id="product-review-widget" style="background: #f8f8f8; padding: 16px; border-radius: 8px;">
-    <h3 style="font-size: 20px; margin-bottom: 10px;">Product Reviews</h3>
-    <p>See what our customers are saying!</p>
-  </div>
+  {% assign show_form_widget = shop.metafields.kartify.enable_form_widget.value %}
+  {% assign show_top_widget = shop.metafields.kartify.enable_top_widget.value %}
+
+  {% if show_top_widget == "true" %}
+    <div id="top-reviewed-widget" style="background: #fff; padding: 16px; margin-bottom: 20px; border-radius: 8px;">
+      <h3 style="font-size: 20px; margin-bottom: 10px;">Top Reviews</h3>
+      <p>Check out our top-rated products!</p>
+    </div>
+  {% endif %}
+
+  {% if show_form_widget == "true" %}
+    <div id="product-review-widget" style="background: #f8f8f8; padding: 16px; border-radius: 8px;">
+      <h3 style="font-size: 20px; margin-bottom: 10px;">Product Reviews</h3>
+      <p>See what our customers are saying!</p>
+    </div>
+  {% endif %}
+
 {% endif %}
 
 {% schema %}
