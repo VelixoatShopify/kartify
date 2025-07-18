@@ -3,7 +3,7 @@
 client_id = "5160030e2b4376cd422f54171e2f5eb3"
 name = "Kartify"
 handle = "kartify-5"
-application_url = "https://header-process-efficiently-maximize.trycloudflare.com"
+application_url = "https://cancelled-mostly-impact-program.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://header-process-efficiently-maximize.trycloudflare.com/auth/callback", "https://header-process-efficiently-maximize.trycloudflare.com/auth/shopify/callback", "https://header-process-efficiently-maximize.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://cancelled-mostly-impact-program.trycloudflare.com/auth/callback", "https://cancelled-mostly-impact-program.trycloudflare.com/auth/shopify/callback", "https://cancelled-mostly-impact-program.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
