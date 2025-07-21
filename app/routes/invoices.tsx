@@ -4,11 +4,10 @@ import {
   Layout,
   Card,
   Text,
-  IndexTable,
   Button,
   InlineStack,
   Box,
-  useIndexResourceState,
+  Checkbox,
 } from "@shopify/polaris";
 
 // Mock data
@@ -48,90 +47,98 @@ const mockOrders = [
   },
 ];
 
-export default function InvoiceOrderListPage() {
-  const [orders] = useState(mockOrders);
+export default function CustomOrderTable() {
+  const [selected, setSelected] = useState<string[]>([]);
 
-  const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-  } = useIndexResourceState(orders);
+  const toggleSelect = (id: string) => {
+    setSelected(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
-  const rowMarkup = orders.map((order, index) => (
-    <IndexTable.Row
-      id={order.id}
-      key={order.id}
-      selected={selectedResources.includes(order.id)}
-      position={index}
-    >
-      <IndexTable.Cell>
-        <Text variant="bodyMd" fontWeight="medium" as="span">
-          #{order.id}
-        </Text>
-      </IndexTable.Cell>
-      <IndexTable.Cell>
-        <Text as="span">{order.customer}</Text>
-      </IndexTable.Cell>
-      <IndexTable.Cell>
-        <Text as="span">{order.date}</Text>
-      </IndexTable.Cell>
-      <IndexTable.Cell>
-        <Text as="span">₹{order.total}</Text>
-      </IndexTable.Cell>
-      <IndexTable.Cell>
-        <Text as="p">Email: {order.email}</Text>
-        <Text as="p">Address: {order.address}</Text>
-        <Text as="p">Products:</Text>
-        <ul style={{ paddingLeft: 20, margin: 0 }}>
-          {order.products.map((product, idx) => (
-            <li key={idx}>
-              {product.name} × {product.quantity}
-            </li>
-          ))}
-        </ul>
-      </IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  const toggleAll = () => {
+    if (selected.length === mockOrders.length) {
+      setSelected([]);
+    } else {
+      setSelected(mockOrders.map(o => o.id));
+    }
+  };
 
   return (
     <Page title="All Orders">
       <Layout>
         <Layout.Section>
           <Card>
-            <IndexTable
-              resourceName={{ singular: "order", plural: "orders" }}
-              itemCount={orders.length}
-              selectedItemsCount={
-                allResourcesSelected ? "All" : selectedResources.length
-              }
-              onSelectionChange={handleSelectionChange}
-              headings={[
-                { title: "Order ID" },
-                { title: "Customer" },
-                { title: "Date" },
-                { title: "Total" },
-                { title: "Details" },
-              ]}
-            >
-              {rowMarkup}
-            </IndexTable>
             <Box padding="400">
-              <InlineStack gap="400" align="start">
-                <Button
-                  onClick={() =>
-                    alert(
-                      "PDFs downloaded for: " + selectedResources.join(", ")
-                    )
-                  }
+              {/* Table Headers */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "40px 1.2fr 1.2fr 1fr 1fr 2fr",
+                  fontWeight: "bold",
+                  paddingBottom: "12px",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <Checkbox
+                  checked={selected.length === mockOrders.length}
+                  onChange={toggleAll}
+                  label=" "
+                />
+                <Text as="span">Order ID</Text>
+                <Text as="span">Customer</Text>
+                <Text as="span">Date</Text>
+                <Text as="span">Total</Text>
+                <Text as="span">Details</Text>
+              </div>
+
+              {/* Table Rows */}
+              {mockOrders.map(order => (
+                <div
+                  key={order.id}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "40px 1.2fr 1.2fr 1fr 1fr 2fr",
+                    padding: "16px 0",
+                    borderBottom: "1px solid #eee",
+                    alignItems: "start",
+                  }}
                 >
+                  <Checkbox
+                    checked={selected.includes(order.id)}
+                    onChange={() => toggleSelect(order.id)}
+                    label=" "
+                  />
+                  <Text as="span">#{order.id} </Text>
+                  <Text as="span">{order.customer} </Text>
+                  <Text as="span">{order.date}</Text>
+                  <Text as="span">₹{order.total}</Text>
+                  <Box>
+                    <Text as="p">Email: {order.email}</Text>
+                    <Text as="p">Address: {order.address}</Text>
+                    <Text as="p">Products:</Text>
+                    <ul style={{ paddingLeft: 20, margin: 0 }}>
+                      {order.products.map((p, i) => (
+                        <li key={i}>
+                          {p.name} × {p.quantity}
+                        </li>
+                      ))}
+                    </ul>
+                  </Box>
+                </div>
+              ))}
+            </Box>
+
+            {/* Action Buttons */}
+            <Box padding="400">
+              <InlineStack gap="400" align="end7">
+                <Button onClick={() => alert("PDF for: " + selected.join(", "))}>
                   Download PDF
                 </Button>
                 <Button
                   variant="primary"
                   onClick={() =>
-                    alert(
-                      "Invoices sent to: " + selectedResources.join(", ")
-                    )
+                    alert("Invoices sent to: " + selected.join(", "))
                   }
                 >
                   Send Invoice
